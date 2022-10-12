@@ -1,0 +1,53 @@
+version: '3.8'
+
+x-dev:
+    &proxy_conf
+    http_proxy: "${HTTP_PROXY}"
+    https_proxy: "${HTTPS_PROXY}"
+    
+# there is no way to do variable concatenation in YAML, so this will not work
+x-var: &APP_NAME
+    influenserul
+
+services:
+    rest:
+        container_name: influenserul_rest
+        build:
+            context: .
+            dockerfile: Dockerfile.fly
+            args: *proxy_conf
+        image: influenserul_img
+        volumes:
+        - '.:/app'
+        ports:
+        - 5012:5000 
+        restart: always
+        command: tail -f /dev/null
+        environment:
+            DB_USER: postgres 
+            DB_PASSWORD: postgres
+            DB_HOST: influenserul_db
+            DB_NAME: postgres
+            FLASK_ENV: "dev"
+            FLASK_DEBUG: 1
+            << : *proxy_conf
+        depends_on:
+        - "db"
+    db:
+        container_name: influenserul_db
+        image: postgres
+        environment:
+            http_proxy: "${HTTP_PROXY}"
+            https_proxy: "${HTTPS_PROXY}"
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: postgres
+        volumes:
+        - database-data:/var/lib/postgresql/data
+        - ./db/init:/docker-entrypoint-initdb.d
+        ports:
+        - 15433:5432
+        restart: always
+volumes:
+    database-data: 
+        name: influenserul_db_volume
