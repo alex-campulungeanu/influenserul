@@ -14,9 +14,9 @@ ENV FLASK_ENV=prod
 
 RUN python3 -m venv $VIRTUAL_ENV
 
-COPY docker-entrypoint.sh /usr/local/bin/
+# COPY docker-entrypoint.sh /usr/local/bin/
 
-RUN sed -i -e 's/\r$//' /usr/local/bin/docker-entrypoint.sh
+# RUN sed -i -e 's/\r$//' /usr/local/bin/docker-entrypoint.sh
 
 WORKDIR /app
 
@@ -28,10 +28,12 @@ COPY . /app
 
 # ENTRYPOINT ["docker-entrypoint.sh"]
 
-RUN chmod +x docker-entrypoint.sh
-RUN docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+# RUN docker-entrypoint.sh
 
 EXPOSE 5000
 
 # CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
-CMD ["python3", "run.py"]
+# CMD ["python3", "run.py"]
+
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
