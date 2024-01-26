@@ -33,8 +33,8 @@ fi
 
 echo "[docker-entrypoint.sh] FINISH container setup"
 
-echo "[docker-entrypoint.sh] Start APP"
+# echo "[docker-entrypoint.sh] Start APP"
 
-python run.py
+# python run.py
 
 exec "$@"
