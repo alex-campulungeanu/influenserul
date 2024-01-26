@@ -6,6 +6,8 @@ from termcolor import colored
 
 from flask_sqlalchemy import get_debug_queries
 
+BASEDIR: str = os.path.abspath((os.path.dirname(__file__)))
+
 
 class BaseConfig(object):
     # app config
@@ -73,6 +75,8 @@ class Production(BaseConfig):
 class Testing(BaseConfig):
     """ Development environment configuration """
     TESTING = True
+    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URI',
+                                        default=f"sqlite:///{os.path.join(BASEDIR, 'instance', 'test.db')}")
 
 app_config = {
     'dev': Development(),

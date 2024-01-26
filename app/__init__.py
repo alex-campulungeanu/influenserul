@@ -9,7 +9,7 @@ init()
 from pathlib import Path
 from dotenv import load_dotenv
 
-accepted_environments = ['prod', 'dev', 'dev.docker']
+accepted_environments = ['prod', 'dev', 'dev.docker', 'testing']
 env_name = os.getenv('FLASK_ENV')
 # not sure why i need this
 if env_name in accepted_environments:
@@ -36,7 +36,6 @@ from flask_mail import Mail
 migrate = Migrate()
 mail = Mail()
 
-# basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 CORS(app) ## enable CORS on all routes
 app.config.from_object(app_config[env_name])

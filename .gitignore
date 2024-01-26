@@ -5,3 +5,5 @@
 __pycache__/
 /logs
 /teste
+/instance/*
+!/instance/.gitkeep
