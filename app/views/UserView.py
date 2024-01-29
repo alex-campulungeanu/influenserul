@@ -4,7 +4,7 @@ from flask import Blueprint, current_app, request, g
 from flask_security.views import forgot_password
 
 from app.constants.regexp_list import *
-from app.models import db
+from app import db
 from app.models.UserModel import UserModel
 from app.models.RoleModel import RoleModel
 from app.models.UserTokenModel import UserTokenModel
@@ -64,7 +64,7 @@ def login():
     password = req_data['password']
     user = UserModel.query.filter_by(email=email).first()
     if user and user.check_password(password):
-        jwt_token = Auth.generate_token(user.id)
+        jwt_token = Auth.generate_token(current_app, user.id)
         res['status'] = app_constants.ok_status
         res['data'] = {'token': jwt_token}
         if current_app.config['JWT_CHECK_DB']:
@@ -111,7 +111,7 @@ def forgot_password_process(p_token):
     return api_response(res, 200)
 
 @user_api.route('/change_password', methods=['POST'])
-@Auth.auth_required
+# @Auth.auth_required
 @validate_request('old_password', 'new_password')
 def change_password():
     res = {'status': app_constants.ok_status, 'data': {}, 'error': {}}

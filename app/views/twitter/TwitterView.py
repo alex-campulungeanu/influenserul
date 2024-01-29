@@ -11,7 +11,8 @@ from app.constants.app_constants import PLATFORM_TWITTER_ID
 from app.constants.reply_quotes import confucius_quotes
 from app.utils.apis.twitter.twitter_api import create_api
 from app.utils.apis.twitter.twitter_utils import sanitize_tweet
-from app.models import db, PostModel, PlatformModel, PlatformConfigModel, PostPlatformModel, TwitterFollowersModel, QuoteModel, cfg_db_schema
+from app.models import PostModel, PlatformModel, PlatformConfigModel, PostPlatformModel, TwitterFollowersModel, QuoteModel
+from app import db
 from app.validations.twitter_schema import reaction_schema
 from app.shared.Api import Api
 
@@ -19,18 +20,18 @@ twitter_api = Blueprint('twitter_api', __name__)
 
 
 @twitter_api.route('/publish_post_to_twitter', methods=['POST'])
-@Auth.auth_required
+# @Auth.auth_required
 @Auth.check_permissions('publishTwitterPost')
 def publish_post_to_twitter():
     res = {'status': '', 'data': {}, 'error': ''}
     api = create_api()
     post_sql = f"select p.id as post_id, p.body as post_body \
-                from {cfg_db_schema}.post p \
-                left join {cfg_db_schema}.post_platform pp on pp.post_id = p.id and pp.platform_id = {PLATFORM_TWITTER_ID} \
+                from post p \
+                left join post_platform pp on pp.post_id = p.id and pp.platform_id = {PLATFORM_TWITTER_ID} \
                 where pp.platform_id is null \
                 order by p.md5 \
                 limit 1;"
-    result_sql = execute_query(post_sql)
+    result_sql = execute_query(current_app, post_sql)
     if len(result_sql) != 0:
         db_post_body = result_sql[0]['post_body']
         db_post_id = result_sql[0]['post_id']
@@ -68,7 +69,7 @@ def publish_post_to_twitter():
 
 
 @twitter_api.route('/publish_reaction_to_reply', methods=['POST'])
-@Auth.auth_required
+# @Auth.auth_required
 @Auth.check_permissions('publishTwitterPost')
 def publish_reaction_to_reply():
     """Get last 10 reply on my tweets and add a like/reply/retweet 
@@ -115,7 +116,7 @@ def publish_reaction_to_reply():
 
 
 @twitter_api.route('/publish_reaction_to_hastags', methods=['POST'])
-@Auth.auth_required
+# @Auth.auth_required
 @Auth.check_permissions('publishTwitterPost')
 # @validate_request('reaction_type') ## eg. all, like, retweet
 @validate_request_cerberus(reaction_schema)
@@ -144,7 +145,7 @@ def publish_reaction_to_hastags():
     return api_response({'status': 'ok', 'data': 'Reaction to hastags added !', 'error': ''})
 
 @twitter_api.route('/get_followers', methods=['GET'])
-@Auth.auth_required
+# @Auth.auth_required
 @Auth.check_permissions('viewPost')
 def get_followers():
     api = create_api()
@@ -176,7 +177,7 @@ def get_followers():
     return api_response({'status': 'ok', 'data':  result, 'error': ''})
 
 @twitter_api.route('/repopulate_post_platform', methods=['GET'])
-@Auth.auth_required
+# @Auth.auth_required
 @Auth.check_permissions('administration')
 def repopulate_post_platform():
     api = create_api()

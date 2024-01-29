@@ -1,11 +1,10 @@
 from datetime import datetime
 
-from app.models import db, ma, cfg_db_schema
+from app import db, ma
 
 
 class PostTypeModel(db.Model):
     __tablename__ = 'post_type'
-    __table_args__ =  {'schema': cfg_db_schema}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
 

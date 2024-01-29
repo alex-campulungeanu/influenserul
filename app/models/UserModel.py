@@ -5,19 +5,16 @@ import os
 
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.models import db, ma, cfg_db_schema
 from app.models.RoleModel import RoleModel
-from app import app
+from app import db, ma
 
 user_role = db.Table('users_role',
-    db.Column('user_id', db.Integer, db.ForeignKey(cfg_db_schema + '.users.id')),
-    db.Column('role_id', db.Integer, db.ForeignKey(cfg_db_schema + '.role.id')),
-    schema=cfg_db_schema
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('role_id', db.Integer, db.ForeignKey('role.id')),
 )
 
 class UserModel(db.Model):
     __tablename__ = 'users'
-    __table_args__ = {"schema": cfg_db_schema}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False)

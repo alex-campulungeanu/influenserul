@@ -1,4 +1,4 @@
-FROM python:bullseye
+FROM python:3.9.18-bullseye
 
 ARG http_proxy
 ARG https_proxy

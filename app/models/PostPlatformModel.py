@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.models import db, cfg_db_schema
+from app import db
 
 # post_platform = db.Table('post_platform',
 #     db.Column('post_id', db.Integer, db.ForeignKey(cfg_db_schema + '.post.id'), primary_key=True),
@@ -12,9 +12,8 @@ from app.models import db, cfg_db_schema
 
 class PostPlatformModel(db.Model):
     __tablename__ = 'post_platform'
-    __table_args__ =  {'schema': cfg_db_schema}
-    post_id = db.Column(db.Integer, db.ForeignKey(cfg_db_schema + '.post.id'), primary_key=True)
-    platform_id = db.Column(db.Integer, db.ForeignKey(cfg_db_schema + '.platform.id'), primary_key=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), primary_key=True)
+    platform_id = db.Column(db.Integer, db.ForeignKey('platform.id'), primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     error = db.Column(db.Integer, default=0)
     error_msg = db.Column(db.Text, default='')

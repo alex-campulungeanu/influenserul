@@ -31,8 +31,8 @@ services:
             FLASK_ENV: "dev"
             FLASK_DEBUG: 1
             << : *proxy_conf
-        depends_on:
-            - db
+        # depends_on:
+        #     - db
     db:
         container_name: influenserul_db
         image: postgres

@@ -1,7 +1,7 @@
 from flask import g, current_app
-from app import app
 
-from app.models import db, ApiLogModel
+from app.models import ApiLogModel
+from app import db
 
 class Api():
     @staticmethod
@@ -11,7 +11,7 @@ class Api():
             db.session.add(new_log)
             db.session.commit()
         except Exception as e:
-            current_app.logger.info('Something wrong where log api')
+            # current_app.logger.info('Something wrong where log api')
             db.session.rollback() 
             # return api_response({'status': 'notok', 'error:': 'Post already added in DB'})
 

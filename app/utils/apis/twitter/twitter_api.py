@@ -1,13 +1,13 @@
 import tweepy
 from flask import current_app
 
-from app import app
+# from app import app
 
 def create_api():
-    consumer_key = app.config["TWITTER_API_KEY"]
-    consumer_secret = app.config["TWITTER_API_SECRET_KEY"]
-    access_token = app.config["TWITTER_ACCESS_TOKEN"]
-    access_token_secret = app.config["TWITTER_ACCESS_TOKEN_SECRET"]
+    # consumer_key = app.config["TWITTER_API_KEY"]
+    # consumer_secret = app.config["TWITTER_API_SECRET_KEY"]
+    # access_token = app.config["TWITTER_ACCESS_TOKEN"]
+    # access_token_secret = app.config["TWITTER_ACCESS_TOKEN_SECRET"]
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)

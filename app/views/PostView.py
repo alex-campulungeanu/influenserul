@@ -14,7 +14,7 @@ from app.shared.response import response_data
 from app.models.PostModel import PostModel#, PostSchema
 from app.models.UserModel import UserModel, UserSchema
 from app.models.PlatformModel import PlatformModel
-from app.models import db, cfg_db_schema
+from app import db
 from app.shared.db_api import execute_query
 from app.constants import app_constants, stop_words_list
 from app.shared.Authentification import Auth
@@ -25,8 +25,8 @@ post_api = Blueprint('post_api', __name__)
 
 
 @post_api.route('/upload_post_files', methods=['POST'])
-@Auth.auth_required
-@Auth.check_permissions('createPost')
+@Auth.auth_required(app=current_app)
+@Auth.check_permissions(current_app, 'createPost')
 def upload_post_files():
     res = {'status': '', 'data': {}, 'error': {}}
     files = request.files.getlist('files[]')
@@ -57,8 +57,8 @@ def upload_post_files():
     return api_response(valid_files + invalid_files)
 
 @post_api.route('/upload_post_text', methods=['POST'])
-@Auth.auth_required
-@Auth.check_permissions('createPost')
+@Auth.auth_required(app=current_app)
+@Auth.check_permissions(current_app, 'createPost')
 @validate_request('source_type', 'nr_of_calls')
 def upload_post_text():
     res = {'status': '', 'data': {}, 'error': {}}
@@ -105,8 +105,8 @@ def upload_post_text():
     return api_response(res)
 
 @post_api.route('/upload_manual_post_text', methods=['POST'])
-@Auth.auth_required
-@Auth.check_permissions('createPost')
+@Auth.auth_required(app=current_app)
+@Auth.check_permissions(current_app, 'createPost')
 @validate_request('name', 'body')
 def upload_manual_post_text():
     res = {'status': '', 'data': {}, 'error': {}}
@@ -132,8 +132,8 @@ def posts():
     post_sql = f'''select count(p.id) all_posts, 
                     sum(case when pp.platform_id is not null then 1 else 0 end) published_posts,
                     sum(case when pp.platform_id is null then 1 else 0 end) available_posts
-                from {cfg_db_schema}.post p
-                left join {cfg_db_schema}.post_platform pp on pp.post_id = p.id and pp.platform_id = 1
+                from post p
+                left join post_platform pp on pp.post_id = p.id and pp.platform_id = 1
                 '''
-    result_sql = execute_query(post_sql)
+    result_sql = execute_query(current_app, post_sql)
     return response_data(result_sql)

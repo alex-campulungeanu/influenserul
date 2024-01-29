@@ -73,3 +73,4 @@ OPTIONAL
 # TODO
 - [] terraform pentru fly.io https://fly.io/docs/app-guides/terraform-iac-getting-started/
 - [] add a post model type (joke, recepie, etc...)
+- [] endpoint for adding a role to an user

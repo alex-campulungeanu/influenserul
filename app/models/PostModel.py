@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.models import db, ma, cfg_db_schema
+from app import db, ma
 from app.models.UserModel import UserSchema
 from app.models.PlatformModel import PlatformModel
 from app.models.PostPlatformModel import PostPlatformModel
@@ -15,12 +15,11 @@ from app.models.PostPlatformModel import PostPlatformModel
 
 class PostModel(db.Model):
     __tablename__ = 'post'
-    __table_args__ =  {'schema': cfg_db_schema}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
     body = db.Column(db.Text, nullable=False)
-    post_type_id = db.Column(db.Integer, db.ForeignKey(cfg_db_schema + '.post_type.id'), nullable=False, default=1)
-    user_id = db.Column(db.Integer, db.ForeignKey(cfg_db_schema + '.users.id'), nullable=False)
+    post_type_id = db.Column(db.Integer, db.ForeignKey('post_type.id'), nullable=False, default=1)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     user = db.relationship("UserModel", backref=db.backref("posts", lazy="dynamic"))
     # platforms = db.relationship('PlatformModel', secondary=post_platform, backref='platform_posts')
     platform = db.relationship('PostPlatformModel', back_populates='post') 
