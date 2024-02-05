@@ -15,7 +15,6 @@ class Auth():
     @staticmethod
     def generate_token(app, user_id):
         res = {'status': '', 'data': {}, 'error': {}}
-        print(app.config['JWT_SECRET_KEY'])
         jwt_expiration = int(app.config['JWT_TOKEN_EXPIRATION_SECONDS'])
         try:
             payload = {

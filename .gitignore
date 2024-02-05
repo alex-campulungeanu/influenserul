@@ -9,3 +9,4 @@ __pycache__/
 !/instance/.gitkeep
 /app/instance/*
 !/app/instance/.gitkeep
+.coverage

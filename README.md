@@ -35,6 +35,9 @@ Technologies used:
   ./scripts/run_server.sh
 ```
 
+## Development
+- copy .env.example to .env
+- when install new package: ```pip install <package> --dry-run``` to check what package will be installed and copy the package to requirements.txt or requirements.test.txt
 
 ## Commands
 * flask db migrate -m <message> 
