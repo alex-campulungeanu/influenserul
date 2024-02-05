@@ -64,6 +64,7 @@ def create_app():
     ######################################################### \n \
     #   ENV:        {env_name}                                \n \
     #   DB_HOST:    {app.config['DB_HOST']}                   \n \
+    #   DB_URI:     {app.config['SQLALCHEMY_DATABASE_URI']}   \n \
     ######################################################### ")
     
     return app

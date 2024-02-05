@@ -7,3 +7,5 @@ __pycache__/
 /teste
 /instance/*
 !/instance/.gitkeep
+/app/instance/*
+!/app/instance/.gitkeep

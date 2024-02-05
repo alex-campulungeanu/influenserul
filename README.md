@@ -71,6 +71,8 @@ OPTIONAL
 ```
 
 # TODO
+- [] move sqlite db from /app/app/instance to /app/instance
+- [] change /app/app to /app/src
 - [] terraform pentru fly.io https://fly.io/docs/app-guides/terraform-iac-getting-started/
 - [] add a post model type (joke, recepie, etc...)
 - [] endpoint for adding a role to an user

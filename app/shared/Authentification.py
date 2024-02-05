@@ -1,3 +1,4 @@
+import traceback
 import datetime
 import os
 from functools import wraps
@@ -14,6 +15,7 @@ class Auth():
     @staticmethod
     def generate_token(app, user_id):
         res = {'status': '', 'data': {}, 'error': {}}
+        print(app.config['JWT_SECRET_KEY'])
         jwt_expiration = int(app.config['JWT_TOKEN_EXPIRATION_SECONDS'])
         try:
             payload = {
@@ -25,6 +27,7 @@ class Auth():
             return jwt.encode(payload, app.config['JWT_SECRET_KEY'], 'HS256').decode("utf-8")
         except Exception as e:
             res['error'] = {'message': 'error in generating user token'}
+            app.logger.error(traceback.format_exc())
             return res
     
     @staticmethod

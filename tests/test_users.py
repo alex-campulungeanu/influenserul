@@ -1,21 +1,26 @@
-import os
 from flask import Response
+from flask.testing import FlaskClient
 
-from app.models import UserModel
-from app import db
+from app.services import auth_service
 
-# def test_login_endpoint(client):
-#     response = client.post('/api/login')
-#     assert response.status_code == 200
-#     assert b'status' in response.data
-    # assert b'error' in response.data
-
-def test_valid_login_logout(client, init_database):
-    default_user = UserModel(email="john.test@test.com", password="testache", name="Testache1")
-    assert 1==1
-    # db.session.add(default_user)
-    # db.session.commit()
-    # response: Response= client.post('/api/login',
-    #                         data=dict(email="john.test@test.com", password="testache")
-    #                        )
-    # assert response.status_code == 200
+def test_valid_login(app: FlaskClient):
+    default_user = auth_service.create_user(email="john.test@test.com", password="testache", name="Testache1")
+    response: Response= app.post('/api/login',
+                            json={"email": "john.test@test.com", "password": "testache"},
+                            follow_redirects=True
+                           )
+    assert response.status_code == 200
+    
+def test_valid_register(app: FlaskClient):
+    secret_word = app.application.config['SECRET_WORD_REGISTRATION']
+    user_data = {
+        "email": "register.user@test.com",
+        "name": "Register",
+        "password": "register",
+        "secret_word": secret_word
+    }
+    response: Response= app.post('/api/signup',
+                        json=user_data,
+                        follow_redirects=True
+                        )
+    assert response.status_code == 200

@@ -14,6 +14,7 @@ from app.shared.email import send_password_reset_email
 from app.shared.Authentification import Auth
 from app.shared.request import validate_request
 from app.constants import app_constants
+from app.services import auth_service
 
 user_api = Blueprint('user_api', __name__)
 
@@ -41,12 +42,13 @@ def signup():
     else:
         user = UserModel.query.filter_by(email=email).first()
         if not user:
-            new_user = UserModel(name=name, email=email, password=password)
-            role = RoleModel.query.get(app_constants.ROLE_USER)
-            new_user.roles.append(role)
-            new_user.set_password(password)
-            db.session.add(new_user)
-            db.session.commit()
+            new_user = auth_service.create_user(email=email, password=password, name=name)
+            # new_user = UserModel(name=name, email=email, password=password)
+            # role = RoleModel.query.get(app_constants.ROLE_USER)
+            # new_user.roles.append(role)
+            # new_user.set_password(password)
+            # db.session.add(new_user)
+            # db.session.commit()
             res['status'] = app_constants.ok_status
             res['status'] = 'User created.'
             return api_response(res)
@@ -65,13 +67,18 @@ def login():
     user = UserModel.query.filter_by(email=email).first()
     if user and user.check_password(password):
         jwt_token = Auth.generate_token(current_app, user.id)
-        res['status'] = app_constants.ok_status
-        res['data'] = {'token': jwt_token}
-        if current_app.config['JWT_CHECK_DB']:
-            user_token = UserTokenModel(token=jwt_token, user_id = user.id)
-            db.session.add(user_token)
-            db.session.commit()
-        return api_response(res, 200)
+        if isinstance(jwt_token, dict): #why i'm doing this ?
+            res['status'] = app_constants.notok_status
+            res['data'] = 'unable to generate token'
+            return api_response(res, 500)
+        else:
+            res['status'] = app_constants.ok_status
+            res['data'] = {'token': jwt_token}
+            if current_app.config['JWT_CHECK_DB']:
+                user_token = UserTokenModel(token=jwt_token, user_id = user.id)
+                db.session.add(user_token)
+                db.session.commit()
+            return api_response(res, 200)
     else:
         res['status'] = app_constants.notok_status
         res['error'] = 'User or password is incorrect'

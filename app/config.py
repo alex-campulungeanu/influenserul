@@ -3,6 +3,7 @@ import sys
 import logging
 from logging.handlers import RotatingFileHandler
 from termcolor import colored
+from flask import current_app
 
 from flask_sqlalchemy import get_debug_queries
 
@@ -75,7 +76,14 @@ class Production(BaseConfig):
 class Testing(BaseConfig):
     """ Development environment configuration """
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URI',
+    DEBUG = True
+    DB_HOST = "localhost"
+    JWT_SECRET_KEY = "superdupersecretkey"
+    SECRET_WORD_REGISTRATION = "secretosul"
+    
+    def __init__(self):
+        super().__init__()
+        self.SQLALCHEMY_DATABASE_URI = os.getenv('TEST_DATABASE_URI',
                                         default=f"sqlite:///{os.path.join(BASEDIR, 'instance', 'test.db')}")
 
 app_config = {
